@@ -28,10 +28,10 @@ while(i<frames-1)
     
     display(Total_White_Pixels);
     
-    if(Total_White_Pixels>100000)
+    if(Total_White_Pixels>250000)
         play(player);
     end
-    if(Total_White_Pixels>200000)
+    if(Total_White_Pixels>270000)
         play(player1);
     end
     
