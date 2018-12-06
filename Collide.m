@@ -20,8 +20,8 @@ while(i<frames-1)
     
     i2 = bwareafilt(i2, 1);
     
-    se = offsetstrel('ball',5,5);
-    i2 = imerode(i2,se);
+    
+    
 
     
     Total_White_Pixels = nnz(i2);
