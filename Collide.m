@@ -11,18 +11,14 @@ i=0;
         
         [y1, Fs1] = audioread('beep1.mp3');
         player1 = audioplayer(y1, Fs1);
-
-while(i<frames-1)
+        
+    while(i<frames-1)
     img=readFrame(input);
   
     thres=graythresh(img);
     i2=~(im2bw(img,thres));
     
     i2 = bwareafilt(i2, 1);
-    
-    
-    
-
     
     Total_White_Pixels = nnz(i2);
     
@@ -36,6 +32,6 @@ while(i<frames-1)
     end
     
 
-     imshow(i2);
+     imshowpair(img,i2,'montage');
     i=i+1;
 end
