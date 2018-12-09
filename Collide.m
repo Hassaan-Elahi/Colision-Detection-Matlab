@@ -39,17 +39,17 @@ while(i<frames-1)
     i2 = bwmorph(i2,'thicken',1);    %fixing boundary
     i2 = bwmorph(i2,'diag');         %fixing boundary
 
-    binaryImage = bwareafilt(i2, 1);    %filtering image with 1 object
-    labeledImage = bwlabel(binaryImage);
-    measurements = regionprops(labeledImage, 'BoundingBox');
-    boundingBox = measurements(1).BoundingBox;     %creating boundingbox on object
+    i2 = bwareafilt(i2, 1);    %filtering image with 1 object
+    i2 = bwlabel(i2);
+    measurements = regionprops(i2, 'BoundingBox');
+    bbox = measurements(1).BoundingBox;     %creating boundingbox on object
 
     if(i==0)
-        initial_width=boundingBox(3);   %finding object width from the first frame
-    end
-
-    imgorig = insertObjectAnnotation(imgorig, 'rectangle', boundingBox, 'object');
-    imshowpair(imgorig,i3,'montage');
+        initial_width=bbox(3);   %finding object width from the first frame
+    end    
+    
+    imgorig = insertObjectAnnotation(imgorig, 'rectangle', bbox, 'object');
+    imshowpair(imgorig,i2,'montage');
 
     i=i+1;
 end
