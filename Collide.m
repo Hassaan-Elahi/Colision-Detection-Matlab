@@ -1,7 +1,7 @@
 input=VideoReader('vid3.mp4');
 frames = VideoReader('vid3.mp4');
 
-initial_width=366; %pixels
+initial_width=0; %pixels
 initial_act_width=14;  %inch
 initial_act_dist=36;   %inch
 
@@ -15,47 +15,41 @@ player = audioplayer(y, Fs);
 [y1, Fs1] = audioread('beep1.mp3');
 player1 = audioplayer(y1, Fs1);
         
-    while(i<frames-1)
-        imgorig=readFrame(input);
-        img = imgaussfilt(imgorig,4);
+while(i<frames-1)
+    imgorig=readFrame(input);
+    img = imgaussfilt(imgorig,4);   %smoothing the image
 
-        thres=graythresh(img);
-        i2=~(im2bw(img,thres));
+    thres=graythresh(img);
+    i2=~(im2bw(img,thres));
 
-        i2 = bwareafilt(i2, 1);
+    i2 = bwareafilt(i2, 1);
 
-        Total_White_Pixels = nnz(i2);
+    Total_White_Pixels = nnz(i2);  %white pixels in image
 
-        %display(Total_White_Pixels);
+    if(Total_White_Pixels>250000)
+        play(player);
+    end
+    if(Total_White_Pixels>270000)
+        play(player1);
+    end
 
-        if(Total_White_Pixels>250000)
-            play(player);
-        end
-        if(Total_White_Pixels>270000)
-            play(player1);
-        end
+    i3=i2;   %image without boundary
 
-        i2 = bwareaopen(i2, 1000);
+    i2 = bwmorph(i2,'remove');       %creating boundary
+    i2 = bwmorph(i2,'thicken',1);    %fixing boundary
+    i2 = bwmorph(i2,'diag');         %fixing boundary
 
-
-    i3=i2;
-
-    i2 = bwmorph(i2,'remove');
-    i2 = bwmorph(i2,'thicken',1);
-    i2 = bwmorph(i2,'diag');
-
-    binaryImage = bwareafilt(i2, 1);
+    binaryImage = bwareafilt(i2, 1);    %filtering image with 1 object
     labeledImage = bwlabel(binaryImage);
     measurements = regionprops(labeledImage, 'BoundingBox');
-    boundingBox = measurements(1).BoundingBox;
+    boundingBox = measurements(1).BoundingBox;     %creating boundingbox on object
 
     if(i==0)
-        d=boundingBox;
+        initial_width=boundingBox(3);   %finding object width from the first frame
     end
 
     imgorig = insertObjectAnnotation(imgorig, 'rectangle', boundingBox, 'object');
+    imshowpair(imgorig,i3,'montage');
 
-         imshowpair(imgorig,i3,'montage');
-
-        i=i+1;
+    i=i+1;
 end
