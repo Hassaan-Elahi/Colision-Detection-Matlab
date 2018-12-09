@@ -7,6 +7,8 @@ initial_act_dist=36;   %inch
 alarm1 = 0;
 alarm2 = 0;
 fontSize = 22;
+
+
 %No of frames in the video
 frames = ceil(frames.FrameRate*frames.Duration);
 
@@ -25,6 +27,7 @@ while(i<frames-1)
         F = (initial_width * initial_act_dist)/initial_act_width; 
     end
         
+        %smoothning the image
         img = imgaussfilt(imgorig,4);
         thres=graythresh(imgorig);
         i2=~(im2bw(img,thres));
@@ -44,9 +47,9 @@ while(i<frames-1)
         i3=i2;
 
         %applying morphological operatiors
-        i2 = bwmorph(i2,'remove');
-        i2 = bwmorph(i2,'thicken',1);
-        i2 = bwmorph(i2,'diag');
+        i2 = bwmorph(i2,'remove');       %creating boundary
+        i2 = bwmorph(i2,'thicken',1);    %fixing boundary
+        i2 = bwmorph(i2,'diag');         %fixing boundary
 
         %Extract objects from binary image by size 1 in parameter shows 
         %the largest object which is ofcourse the main object.
@@ -58,6 +61,8 @@ while(i<frames-1)
 
         measurements = regionprops(labeledImage, 'BoundingBox');
 
+
+        %creating boundingbox on object
         boundingBox = measurements(1).BoundingBox;
 
 
